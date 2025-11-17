@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Paper Lang</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <img class="logo" src="img/papertoy_logo.png"/>
+</head>
+<body>
+<a href="index.html">home</a>
+<h1>Paperlang Language Guide</h1>
+<h3>Contents</h3>
+<ol>
+    <li><a href="#section1">The Basics</a></li>
+    <li><a href="#section2">The Game</a></li>
+    <li><a href="#attributes">Variables</a></li>
+    <li><a href="#section3">Declaring Cards</a></li>
+    <li><a href="#section4">Move Commands</a></li>
+    <li><a href="#section5">Simple Moves & Cuts</a></li>
+    <li><a href="#section6">Create Random Cards</a></li>
+    <li><a href="#section7">Create Specific Cards</a></li>
+    <li><a href="#section8">Player Chooses a Card</a></li>
+    <li><a href="#section9">Choosing between decks</a></li>
+    <li><a href="#section10">Choosing between options</a></li>
+    <li><a href="#section11">Control flow</a></li>
+    <li><a href="#section12">Stacklists (lists of stacks)</a></li>
+    <li><a href="#section13">Filtering source & destination stacks</a></li>
+    <li><a href="#section14">Ordered Sequence Matchers</a></li>
+    <li><a href="#section15">Sequence Matchers & Stack Lists Move Commands</a></li>
+    <li><a href="#booleanbraces">Moving cards based on their attributes</a></li>
+    <li><a href="#section16">Summing up card attributes</a></li>
+    <li><a href="#section17">Detecting Card Attribute Sequences in unordered stacks</a></li>
+    <li><a href="#section18">Shuffling</a></li>
+    <li><a href="#section19">Card movement hooks</a></li>
+    <li><a href="#section20">Declaring a winner</a></li>
+    <li><a href="#section21">Declaring a loser</a></li>
+    <li><a href="#section22">phases</a></li>
+    <li><a href="#section23">while loops</a></li>
+</ol>
+
+<p>You can open any projects in the Paper Toy tool by entering the main menu with escape, clicking "Load":</p>
+<img src="img/menu_load_highlight.png" width="200"/>
+<p>and pasting the path to your project from the clipboard by pressing the "Paste from clipboard" button.</p>
+<img src="img/pastpath.png" width="540"/>
+<p>Then Selecting the game file, and hitting the load button</p>
+<h4>press 'r' on your keyboard to start or restart the game once it has been loaded (this also recompiles the code if you've made any changes)</h4>
+
+        <h3 id="section1">The Basics</h3>
+        <p>
+            Paperlang is a programming language for card games.
+        </p>
+
+        <p>
+            The two basic concepts in Paperlang are Cards and Stacks. Cards & Stacks may both contain attributes. Stacks contain some builtin attributes that hold important state, like <span class="code notranslate">size</span> for the size, <span class="code notranslate">top</span> for the top card, <span class="code notranslate">bottom</span> for the bottom card.
+        </p>
+        <pre class="code notranslate">
+            card A start
+                int h = 0
+            end
+
+            A.h ; access 'h'
+
+            visiblestack a
+
+            place A -> a 1
+
+            a.size == 1 ; a contains 1 card, so it's size is 1
+            a.top == A ; the top card in a is 'A'
+            a.bottom == B ; the bottom card in a is also 'A'
+
+            card B start
+                int h
+            end
+
+            place B -> a 1
+            a.size == 2 ; a now contains 2 cards
+            a.top-1 == A ; the second from top is still A
+            a.top == B ;the top card is now B
+
+            int a.customVariable ; stacks can have attributes assigned to them
+            a.customVariable = 5 ; and assigned to
+        </pre>
+
+        <p>
+            There are two kinds of stacks, visible and hidden:
+        </p>
+
+        <pre class="code notranslate">
+            game Example start
+
+                card A start end
+
+                visiblestack a
+                hiddenstack b
+
+                place A -> a 5
+                place A -> b 5
+
+                setup start
+
+                end
+
+                turn start
+
+                end
+            end
+        </pre>
+        <p>
+            Here a is visible (faceup), and b is hidden (facedown)
+        </p>
+        <img src="img/stacktypes.png" width="420"/>
+        <p>
+            You can chage how the stacks & cards are displayed using the design tool. You can access the design tool from the escape menu
+        </p>
+        <img src="img/designtool.png" width="420"/>
+        <p>
+            Lets see what happens when we change the orientation of stack b to 'Horizontal'...
+        </p>
+        <img src="img/orientationchange.png" width="420"/>
+
+        <p>
+            You can also assign sprites to cards from here. Sprite paths are relative to the game code directory.
+        </p>
+        <img src="img/sprites.png" width="420"/><br/>
+        <img src="img/spritesinuse.png" width="420"/>
+
+
+        <h3 id="section2">The Game</h3>
+        This is the simplest game you can create
+        <pre class="code notranslate">
+            game EmptyGame start
+                setup start
+
+                end
+
+                turn start
+
+                end
+            end
+        </pre>
+
+        <p>Notice the <span class="code notranslate">setup</span> and <span class="code notranslate">turn</span> blocks denoted buy the start and end tags.</p>
+        <p>Any code in the setup block will run at the start of the game. And any code in the turn block will run every turn.</p>
+        <p>You can place code outside of the setup block, and that will get run before the game starts. However, anything that happens in the setup block will be fully animated and visible to the player.</p>
+        <p>For example, when dealing out cards, maybe you want the player to see the cards being dealt out one by one, instead of starting the game with a full hand. Then you would put the dealing code inside the <span class="code notranslate">setup start ... end</span> block</p>
+        <p>If you load this example into PaperToy, you will notice that the turn counter goes up automatically, this is because nothing inside the turn block is asking the user for any input. If no user input is nessecary, a turn will proceed automatically.</p>
+        <p>This game is empty, so we end up with an empty screen</p>
+        <h3 id="attributes">Variables</h3>
+        <p>
+            As in most programming languages, paperlang has variables. There are different types of variables. Right now only integer numbers (whole numbers) and booleans (true or false) are available.
+            Strings (text) are planned for a future update. floats (decimal numbers like 1.25) will added if there is demand for it.
+        </p>
+        <p>
+            variables are declared like so:
+        </p>
+        <pre class="code notranslate">
+            game mygame start
+                int i
+                i = 5
+
+                int j = 4
+
+                ...
+
+                turn start
+                    bool weWon = false
+                end
+                ...
+            end
+        </pre>
+        <p>
+            As you can see, you can declare and assign attributes in the same line, or on different lines.
+            Variables declared inside blocks are not visible to code outside of that block, but variables declared
+            outside a block are visible to code inside that block. For instance in the above example
+            <span class="code notranslate">i</span> & <span class="code notranslate">j</span> can both be accessed from
+            the <span class="code notranslate">turn</span> block, but <span class="code notranslate">weWon</span> cannot
+            be accessed outside the <span class="code notranslate">turn</span> block.
+        </p>
+        <p>Small technical detail (for interest only): the following two peices of code compile to exactly the same bytecode:</p>
+        <pre class="code notranslate">
+            int i
+            i = 5
+        </pre>
+        <pre class="code notranslate">
+            int i = 5
+        </pre>
+        <h3 id="section3">Declaring Cards <span class="code notranslate">card MyCard start ... end</span></h3>
+            <p>
+                The first thing we should cover here is how to make a card.
+                Cards are declared like so:
+            </p>
+                <pre class="code notranslate">
+                    card Monster start
+                        int defence
+                        int attack
+                    end
+                </pre>
+            <p>
+                This delcares a Monster card. But what if we want multiple types of monsters? And what if we want to
+                easily fill a stack of cards with random monsters? Well that's where 'parent' cards come in.
+            </p>
+            <pre class="code notranslate">
+                card Monster start
+                    int defence
+                    int attack
+                end
+
+                card Goblin Monster start
+                    defense=5
+                    attack=5
+                end
+
+                card Hobold Monster start
+                    defense=10
+                    attack=2
+                end
+
+                card Elf Monster start
+                    defense=2
+                    attack=8
+                end
+            </pre>
+            <p>
+                Here we create three different kinds of Monster: <span class="code notranslate">Goblin Hobold Elf</span> each with different defense and attack stats.
+            </p>
+            <p>
+                You cannot change an attribute for one individual card, changing an attribute for one card will change that value for all cards of that type. for instance this code:
+            </p>
+            <pre class="code notranslate">
+                monsterStack.top.defense = 0
+            </pre>
+            <p>
+                Will take the top card of the stack <span class="code notranslate">monsterStack</span>, and change it's
+                defense value to <span class="code notranslate">0</span>. But it also will change the defense value of
+                all the other cards of the same type to <span class="code notranslate">0</span>.
+                So if the top card happens to be an <span class="code notranslate">Elf</span> then all
+                <span class="code notranslate">Elf</span> cards will have a defense value of
+                <span class="code notranslate">0</span>. This is currently just a limitation of the engine.
+                'Singleton cards' are planned for a future release.
+            <p>
+                But how would we fill a stack with random Monster cards? Like this:
+            </p>
+            <pre class="code notranslate">
+                hiddenstack monsters
+                random Monster -> monsters 100
+            </pre>
+            <h4>Premade Standard Playing Card Deck & the <span class="code notranslate">#use</span> command</h4>
+            <p>
+                When looking through the example code, you will often see this a line like this:
+            </p>
+            <pre class="code notranslate">
+                #use "deck"
+            </pre>
+            <p>
+                if you have a look in the same folder as the code file with this line, you will find a file called deck, if you open this file up in an editor like notepad, you will see
+                a bunch of playing card declarations, and commands filling a hiddenstack named 'deck'.
+            </p>
+            <pre class="code notranslate">
+                ...
+                card aceH number start v = 1 suit = 1 end
+                card twoH number start v = 2 suit = 1 end
+                card threeH number start v = 3 suit = 1 end
+                ...
+
+                hiddenstack deck
+                place aceH -> deck 1
+                place aceD -> deck 1
+                place aceC -> deck 1
+                ...
+            </pre>
+            <p>
+                The <span class="code notranslate">deck</span> stack represents a standard deck of 52 playing cards. These are already defined for you (along with their sprites), so there's no need to make them yourself. All you have to do is make sure the deck file (and the matching design.txt file, we'll cover this later) is next to your game file, and you're ready to use the standard deck of playing cards.
+            </p>
+            <h3 id="section4">Move Commands<span class="code notranslate">a -> b</span></h3>
+            <h4 id="section5">Simple Moves & Cuts</h4>
+            <p>The next thing we want to cover are move commands. The syntax is:</p>
+            <pre class="code notranslate">
+                SOURCE_STACk -> DESTINATION_STACK top/bottom NUMBER_TO_MOVE
+            </pre>
+            <pre class="code notranslate">
+                SOURCE_STACk /> DESTINATION_STACK top/bottom NUMBER_TO_CUT
+            </pre>
+            <p>A <b>move</b> <span class="code notranslate">-></span> moves cards from one stack to the other, one at a time. So if you are moving from the top of one stack to the top of another, the order of the cards will be reversed.</p>
+            <p>A <b>cut</b> <span class="code notranslate">/></span> moves multiple cards at the same time from one stack to the other, preserving order.</p>
+            <h4 id="section6">Create Random Cards</h4>
+            <p>This line means, move <span class="code notranslate">NUMBER_TO_MOVE</span> cards from either the <span class="code notranslate">top</span> or <span class="code notranslate">bottom</span> of <span class="code notranslate">SOURCE_STACK</span> to the top of <span class="code notranslate">DESTINATION_STACK</span>.<br/>
+                If you want to move a card to the <b>bottom</b> of <span class="code notranslate">DESTINATION_STACK</span>, you can replace the <b>'<span class="code notranslate">-></span>' (move over)</b> with an <b>'<span class="code notranslate">->_</span>' (move under)</b></p>
+            <p><span class="code notranslate"> random Monster -> a 20</span> means "Create twenty random cards of type 'Monster' and place them on the top of the 'a' stack"</p>
+
+            <h4 id="section7">Create Specific Cards</h4>
+            <p>
+                To place create specific cards and place them into a dack, you can use the <span class="code notranslate">place</span> keyword
+            </p>
+            <pre class="code notranslate">
+                place Goblin -> a 5
+            </pre>
+            <p>
+                The above code creates 5 <span class="code notranslate">Goblin</span> cards and places them on the top of stack <span class="code notranslate">a</span>
+            </p>
+
+            <h4 id="section8">Player Chooses a Card</h4>
+            <p>This feature can be quite useful when a player needs to choose a card from their hand to play.</p>
+            <p>You can also let the player decide which cards specifically to move with <span class="code notranslate">choose SOURCE_STACk -> DESTINATION_STACK NUMBER_TO_MOVE</span></p>
+
+            <pre class="code notranslate">
+                ...
+                    random Monster -> a 3
+                    random Monster -> b 3
+
+                    setup start
+
+                    end
+
+                    turn start
+                        pickone start
+                            pick choose a -> c 1 then
+                            pick choose b -> c 1 then
+                        end
+                    end
+                ...
+            </pre>
+
+            <p>if you replace lines 21 to 33 in cards&stack.txt with this code snippet, each time you choose a stack to move a card from, the game will let you choose which card from that stack is moved.
+                If that stack is a <span class="code notranslate">visiblestack</span> the front of the cards will be visible, else they will be hidden:</p>
+            <img src="img/choosemove.png" width="420"/>
+            <h4 id="section9">Choosing between decks</h4>
+            <p>
+                There's a much simpler way to express this part:
+
+                <pre class="code notranslate">
+                    pickone start
+                        pick choose a -> c 1 then
+                        pick choose b -> c 1 then
+                    end
+                </pre>
+                <p>
+                and that's like this:
+                </p>
+                <pre class="code notranslate">
+                    choose a,b -> c 1
+                </pre>
+                <p>
+                If you specify multiple source or destination stacks like this, the user will get to choose between those options. The 'choose' keyword at the start of the line here makes it so that once the user has selected a source stack, they will need to select which card to move too.
+                </p>
+                <pre class="code notranslate">
+                    a,b,c -> e,f,g top 1
+                </pre>
+                <p>
+                    This means: <b>"Move the top card from either of stacks a, b or c TO either of stacks e, f or g."</b><br/>
+                </p>
+                <p>
+                    there's another way to specify multiple stacks in a stack move, and that's with <span class="code notranslate">stacklists</span>. These let you do powerful things like positional queries & indexing. These will be covered in a later section.
+                </p>
+                <h4 id="section10">Choosing between options</h4>
+                <p>
+                    You may ask then, what is the difference between a pick block <span class="code notranslate">pickone start ... end</span> block and just specifying multiple stacks seperated by a comma <span class="code notranslate">a,b -> c,d</span> ?
+                </p>
+                <p>
+                    The answer is effects. Say you wanted to let the user choose a deck to move a card from, but then you wanted something to happen based on their choice. You could use a <span class="code notranslate">pickone ...</span> block to acheive this:
+                </p>
+                <p>
+                    Imagine a game of blackjack (in fact you don't have to imagine very hard, as a full blackjack implementation is included as an example project. <span class="code notranslate">examples/blackjack</span>)
+                </p>
+
+                <p>Here, we implement hit and stick "buttons" using two different stacks. When the user 'chooses' either stack, we send the top card, to the top of the same stack (essentially moving nothing), but then depending on the users choice, we either deal more cards to the dealer & player, or we end the game.</p>
+
+                <pre class="code notranslate">
+
+                    card Hit start end
+                    card Stick start end
+
+                    visiblestack hitbutton
+                    visiblestack stickbutton
+
+                    place Hit -> hitbutton 1
+                    place Stick -> stickbutton 1
+
+                    ...
+
+                    pickone start
+                        pick hitbutton -> hitbutton top 1 then
+                            deck -> hand top 1
+                            deck -> dealerHidden top 1
+                        pick stickbutton -> stickbutton top 1 then
+                            ; calculate the winner
+                            ...
+                    end
+                    ; check if we've lost ...
+                </pre>
+                <img src="img/blackjack.gif" width="640">
+                <p>The dealers hand is mostly hidden to the player, apart from their first card. The players hand is visible at the bottom. If the player chooses to stick, the dealers hand is revealed. If the players score exceeds 21, then the player automatically looses. If you're interested in looking at the code, it's available in the example blackjack project <span class="code notranslate">docs/examples/blackjack</span></p>
+
+                <h3 id="section11">Control flow <span class="code notranslate">if ... start ... elseif ... else ... end</span> </h3>
+                <p>
+                    an if/elseif/else structure exists in paperlang. Leaning on the blackjack example project again:
+                </p>
+                <pre class="code notranslate">
+                    if dealerScore > 21 start
+                      winneris currentPlayer
+                    elseif (21 - playerScore) < (21 - dealerScore) then
+                      winneris currentPlayer
+                    else
+                      looseris currentPlayer
+                    end
+                </pre>
+
+                <h3 id="section12">Stacklists (lists of stacks)</h3>
+                <p>It is possible to define a list of stacks, this is usefull where you have multiple stacks that need to interact with eachother in a positional way. EG in the solitaire game <a href="https://bicyclecards.com/how-to-play/accordion/">Accordion</a></p>
+                <p>For an example of stacklist use, please see the <a href="accordion_workedexample.html">Accordion Worked Example Project</a></p>
+                <pre class="code notranslate">
+                    stacklist list[5]
+
+                    place CardA -> list[0] 1
+                    place CardA -> list[1] 1
+                    place CardA -> list[2] 1
+                    place CardA -> list[3] 1
+                    place CardA -> list[4] 1
+
+                    list -> list[:-1] top all
+                </pre>
+                <p>
+                    The above code defines a list of 5 stacks, places a card on each stack, and then asks the player to move all the cards from any stack to the stack directly preceding it.
+                </p>
+
+                <p>
+                    In the Accordion game, the player can choose to move a card 1 to the left, or three to the left, so the move command looks like this:
+                </p>
+                <pre class="code notranslate">
+                    list -> list[:-1:-3] top all
+                </pre>
+                <p>
+                    Meaning -1, or -3.
+                    Relative <span class="code notranslate">[:N]</span> indexing is always relative to the source deck, so the following code does not make sense and will not run:
+                </p>
+                <pre class="code notranslate">
+                    list[:1] -> list[-1] top 1
+                </pre>
+                <p>
+                    You can also directly specify stacks in a list by index:
+                </p>
+                <pre class="code notranslate">
+                    list[4] -> list[0] top 1
+                </pre>
+                <p>
+                    Move the top card from the 5th stack in the list, to the first stack in the list (indexing begins at zero)
+                </p>
+
+                <h3 id="section13">Filtering source & destination stacks <span class="code notranslate"> a,b,c -> d,e,f top 1 where from{...}, to{...} </span></h3>
+                <p>
+                    In situations where you are moving either to or from multiple stacks, you may want to filter available choices by certain criteria. We use as an example, the Accordion Solitaire implementation.
+                </p>
+                <pre class="code notranslate">
+                    row /> row[:-1:-3] top all where from{from.size > 0}, to{(from.top.v == to.top.v) || (from.top.suit == to.top.suit)}
+                </pre>
+                <p>
+                    In Accordion solitaire, you may only move a card to a stack where the top card on that stack matches the card you want to move, either in value, or in suit. We define that rule as a move filter:
+                </p>
+                <pre class="code notranslate">
+                    where from{from.size > 0}
+                </pre>
+                <p>
+                    the stack you're moving from, must contain at least one card
+                </p>
+                <pre class="code notranslate">
+                    , to{(from.top.v == to.top.v) || (from.top.suit == to.top.suit)}
+                </pre>
+                <p>
+                    the top card of the stack you're moving to must match the top card of the source deck either in suit, or value (v)
+                </p>
+                <p> the two filters must be seperated by a '<span class="code notranslate">,</span>' comma, and must follow the <span class="code notranslate">where</span> keyword</p>
+                <h3 id="section14">Ordered Sequence Matchers</h3>
+                <p>
+                    You can test whether a stack contains a certain sequence of cards, in order. You can use an equality test against a stack and a sequence matcher <span class="code notranslate">[...]</span>.
+                </p>
+                <pre>
+                    if a == [A B C D] start
+                    ...
+                </pre>
+                <p>
+                    Within the square branckets you specify a sequence of cards by name. You can also match any card once: '<span class="code notranslate">_</span>', and match any number (including 0) of cards with '<span class="code notranslate">:</span>'. Please see the following examples:
+                </p>
+                <p>
+                    "Does stack contain cards A B C and D in that order. And no other cards?"
+                </p>
+                <pre class="code notranslate">
+                    a == [A B C D]
+                </pre>
+                <p>
+                    "Does stack contain cards A B C and D in that order at the top of the deck? Any or no cards may follow after D"
+                </p>
+                <pre class="code notranslate">
+                    a == [A B C D :]
+                </pre>
+                <p>
+                    "The top card may be any card, then the sequence in the deck must be B, C & D"
+                </p>
+                <pre class="code notranslate">
+                    a == [_ B C D]
+                </pre>
+                <p>
+                    "Does a contain C anywhere in the stack?"
+                </p>
+                <pre class="code notranslate">
+                    a == [: C :]
+                </pre>
+                <p>
+                    "Does stack a start with A on top, then contain the sequence B, anycard, D anywhere in the deck, and then end with another D card?"
+                </p>
+                <pre class="code notranslate">
+                    a == [A : B _ D : D]
+                </pre>
+
+                <h4 id="section15">Sequence Matchers & Stack Lists Move Commands</h4>
+                <p>
+                    You can use ordered sequence matchers to select stacks that you can move from & to:
+                </p>
+                <p><span class="code notranslate">a{[A A A A]} -> b top all</span> means, ask the user to select a stack matching the sequence [A A A A] from the list to move from:</p>
+                <pre class="code notranslate">
+                    card A start end
+                    card B start end
+
+                    stacklist a[2]
+                    visiblestack b
+
+                    place B -> a[0] 4
+                    place A -> a[1] 4
+
+                    a{[A A A A]} -> b top all
+                </pre>
+                <p>You can see that only the second stack here is selectable:</p>
+                <img src="img/orderedsquencematcher.png" width="420"/>
+                <p>
+                    You can also pick the first/last stack that matches the sequence:
+                </p>
+                <pre class="code notranslate">
+                    card A start end
+
+                    stacklist a[2]
+                    visiblestack b
+
+                    place A -> a[0] 4
+                    place A -> a[1] 4
+
+                    a{|[A A A A]} -> b top all
+                </pre>
+<p>To select the last stack in the sequence, simply put the '<span class="code notranslate">|</span>' after the sequence: <span class="code notranslate">a{[A A A A]|} -> b top all</span>.
+    </p><p>Here you can see that even though both stacks match the sequence, only the first stack is selectable.</p>
+                <img src="img/matchfirstinsequence.png" width="420"/>
+
+                <p>You can also specify destination stacks:</p>
+                <pre class="code notranslate">
+                    card A start end
+                    card B start end
+
+                    stacklist a[2]
+                    stacklist b[2]
+
+                    place A -> a[0] 4
+                    place B -> a[1] 4
+                    place B -> b[0] 4
+                    place A -> b[1] 4
+
+                    a{[A A A A]} -> b{[A A A A]} top all
+                </pre>
+                <img src="img/destinationstackmatcher.gif" width="420"/>
+                <h3>Moving all of one kind of card</h3>
+                <p>You can move all of one kind of card: <span class="code notranslate">a{C} -> b top all</span></p>
+                <pre class="code notranslate">
+                    game EmptyGame start
+
+                        card A start end
+                        card B start end
+                        card C start end
+                        card D start end
+                        card E start end
+
+                        visiblestack a
+                        place A -> a 5
+                        place B -> a 5
+                        place C -> a 5
+                        place D -> a 5
+                        place E -> a 5
+
+                        shuffle a
+
+                        visiblestack b
+
+                        setup start
+
+                        end
+
+                        turn start
+                            a{C} -> b top all
+                        end
+                    end
+                </pre>
+                <p>Move all C cards from a to b</p>
+                <img src="img/moveCardsOfType.gif" width="420"/>
+                <p>
+                    The expression <span class="code notranslate">a{C}</span> actually counts as a 'logical stack' so you can do things like this:
+                </p>
+                <pre class="code notranslate">
+                    ; if there are 5 C's in a, move them all into b
+                    if (a{C}).size == 5 start
+                        a{C} -> b top all
+                    end
+                </pre>
+                <h3 id="booleanbraces">Moving cards based on their attributes</h3>
+                <p>You can also put logical expressions inside braces: <span class="code notranslate">a{x > 5}</span></p>
+                <pre class="code notranslate">
+                    ...
+                    card A start
+                        int x = 5
+                    end
+                    card B start
+                        int x = 2
+                    end
+                    ...
+                    a{x > 4} -> b top all
+                </pre>
+                <p>Here we move cards who's x attribute is greater than 4 to the b stack</p>
+                <h3 id="section16">Summing up card attributes</h3>
+                <p>
+                    In blackjack, it's important to keep track of the total score of cards in play. You can do this by summing over attributes of cards in a stack. The following code uses the prebuilt 52 card deck.
+                    <span class="code notranslate">hand{v}</span> means sum all of <span class="code notranslate">v</span> attributes of the cards in <span class="code notranslate">hand</span>.
+                    In our blackjack game, we assign that to our playerScore variable so that we can track it. Cards in the premade deck have two attributes, <span class="code notranslate">v</span> for value, and <span class="code notranslate">suit</span> for suit.
+                </p>
+                <pre class="code notranslate">
+                    #use "deck"
+                    visiblestack hand
+                    int playerScore
+
+                    ...
+
+                    playerScore = hand{v}
+                </pre>
+                <h3 id="section17">Detecting Card Attribute Sequences in unordered stacks</h3>
+                <p>
+                    Sometimes it's usefull to detect sequences of cards in stacks that may be unoredered. Consider the game rummy, where you need to have sequences of cards EG [A 2 3] [9 10 j] in your hand, your hand may not be sorted, and whats's more, you don't want to explicitally write down every possible legal three sequence. This is where Orderless Sequence Matches come in.
+                </p>
+                <p>
+                    Sequences construct 'logical' stacks. You can treat these stacks just like ordinary stacks, you can check their size, move from them and match them against sequences like <span class="code notranslate">[: A 2 3 :]</span>.
+                </p>
+                <p>
+                    The syntax is <span class="code notranslate">(STACKNAME { sq N A EXPRESSION })</span> where <span class="code notranslate">STACKNAME</span> is the name of your stack,
+                    <span class="code notranslate">N</span> is the expected size of the sequence, <span class="code notranslate">A</span> is the attribute you want the stack to be sorted by during the search, and <span class="code notranslate">EXPRESSION</span>
+                    is the expression to test previously matched card in the sequence against the next one.
+                </p>
+                <p>
+                    In the expression, the last matched card and next card to test are bound to <span class="code notranslate">l</span> and <span class="code notranslate">n</span> respecitively.
+                    When the search is executed, the stack will be sorted by the attribute <span class="code notranslate">A</span>, and every possible sequence matching your search will be tested for.
+                </p>
+                <p>
+                    At the moment, only sorting in ascending order is supported.
+                </p>
+                <p>
+                    In the following example, 5 cards are dealt into the players hand, and if any continuous sequence of 3 cards is detected, the player wins.
+                    <span class="code notranslate">hand{sq 3 v (l.v+1) == n.v})</span> We sort the stack <span class="code notranslate">hand</span> by the attribute <span class="code notranslate">v</span>, then we only match cards where the next card's <span class="code notranslate">v</span> value is one greater than the last.
+                </p>
+                <p>
+                    The resulting logical stack will contain 3 cards if a matching sequence has been found, otherwise it will be empty.
+                </p>
+                <pre class="code notranslate">
+                    game OrderlessSequences start
+
+                        #use "deck"
+
+                        visiblestack hand
+
+                        shuffle deck
+
+                        setup start
+                            deck -> hand top 5
+                        end
+
+                        turn start
+
+                            if (hand{sq 3 v (l.v+1) == n.v}).size == 3 start
+                                winneris currentPlayer
+                            end
+                            ...
+                        end
+                    end
+                </pre>
+                <p>
+                    If the player wins, lets move the winning sequence from the hand to a <span class="code notranslate">done</span> stack
+                </p>
+                <pre class="code notranslate">
+                    if (hand{sq 3 v (l.v+1) == n.v}).size == 3 start
+                        hand{sq 3 v (l.v+1) == n.v} -> done top all
+                        winneris currentPlayer
+                    end
+                </pre>
+                <h3 id="section18">Shuffling</h3>
+                <p>
+                    Stacks can be shuffled:
+                </p>
+                <pre class="code notranslate">
+                    shuffle a
+                </pre>
+                <p>
+                    "shuffle stack a"
+                </p>
+                <h3 id="section19">Card movement hooks (not available in demo version)</h3>
+                <p>Many collectable card games have mechanics where individual cards has special rules that play out when they enter or exit certain stacks. In Paperlang, you can use <span class="code notranslate">onmoved</span> and <span class="code notranslate">premove</span> hooks to run a bit of code every time a specific card has just been moved, or is just about to be moved.</p>
+                <p>inside the <span class="code notranslate">onmoved</span> and <span class="code notranslate">premove</span> hooks, <span class="code">to</span> references the stack the card moved in to, and <span class="code"></span>references the stack the card just moved out of. <span class="code">this</span> references the card being moved.</p>
+                <pre class="code notranslate">
+                    ...
+                    visiblestack graveyard
+                    visiblestack play
+                    card Necromancer start end
+
+                    onmoved Necromancer start
+                        if to == graveyard start
+                            ; raise the dead!
+                            graveyard -> play top all
+                        end
+                    end
+                    ...
+                </pre>
+                <p>When the Necromancer enters the graveyard, everything in the graveyard gets moved into the play stack</p>
+                <p>But this code will also bring the Necromancer back from the graveyard. Maybe we want to move all the cards from the graveyard <b>just before</b> the necromancer gets there, so the necromancer will still end up in the graveyard?</p>
+                <p>For that, we can use a <span class="code notranslate">premove</span> hook</p>
+                <pre class="code notranslate">
+                    ...
+                    visiblestack graveyard
+                    visiblestack play
+                    card Necromancer start end
+
+                    premove Necromancer start
+                        if to == graveyard start
+                            ; raise the dead! Just before the Necromancer gets there ...
+                            graveyard -> play top all
+                        end
+                    end
+                    ...
+                </pre>
+                <h3 id="section20">Declaring a winner</h3>
+                <p>The current player wins</p>
+                <pre class="code notranslate">
+                    winneris currentPlayer
+                </pre>
+                <h3 id="section21">Declaring a loser</h3>
+                <p>The current player loses</p>
+                <pre class="code notranslate">
+                    looseris currentPlayer
+                </pre>
+                <h3 id="section22">Phases</h3>
+                <p>sometimes, it's useful to define some behaviour once, and then run it from somewhere else. This could be because it needs to run in multiple locations, or it could just be to neeten up your code.</p>
+                <p>Syntax: <span class="code notranslate">do PHASE_NAME</span></p>
+                <pre class="code notranslate">
+                    ...
+                    phase refreshHand start
+                        deck -> hand top 1
+                    end
+                    ...
+                    turn start
+                        do refreshHand
+                        ...
+                    end
+                    ...
+                </pre>
+                <p>Here, we delcare a phase called <span class="code notranslate">refreshHand</span>, which adds a card to our <span class="code notranslate">hand</span> from the <span class="code notranslate">deck</span> We run it at the start of every turn</p>
+                <h3 id="section23">while loops</h3>
+                <p>Sometimes, it's nessecary to repeat an action multiple times while something is true. If you have some experience with programing this idea shouldn't be new to you. It works in exactly the same way as in many other programing languages.</p>
+                <pre class="code notranslate">
+                    i = 0
+                    while i < 5 start
+                        deck -> hand top 1
+                        i = i + 1
+                    end
+                </pre>
+                <p>This will place 5 cards into the <span class="code notranslate">hand</span> stack. </p>
+                <p><b>WARNING</b> Infinite loops will cause the game to hang and become unresponsive.</p>
+</body>
+<footer style="color:dimgrey">
+    <p style="color:dimgrey">This documentation was hand writen by a human. Spelling errors and all, just as god intended.</p>
+    <p style="color:dimgrey">No generative AI has been used.</p>
+</footer>
+</html>

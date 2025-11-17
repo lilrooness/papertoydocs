@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Project</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <img class="logo" src="img/papertoy_logo.png"/>
+</head>
+<body>
+<a href="index.html">home</a>
+    <h1>Creating a new project</h1>
+    <h3>Creating the game file</h3>
+    <p>A Papertoy project is made up of two main files, a code file, and a design file.</p>
+    <p>You only need to create the code file. So open up your favourite text editor and create a .txt file named anything you like!
+        </p>
+    <p><b class="hint">Hint!</b> It's better to use a code editor like notepad++, sublime text, or VSCode than something like Microsoft Word or Open Office</p>
+    <p><b class="hint">Hint!</b> It's best to create a new folder for your project, so you can put all your project files in once place.</p>
+    <p>When you've created the file, paste the following code into the editor:</p>
+    <pre class="code notranslate">
+        game MyGame start
+            card A start
+
+            end
+
+            card B start
+
+            end
+
+            visiblestack a
+            visiblestack b
+
+            place A -> a 10
+            place B -> b 10
+
+            setup start
+
+            end
+
+            turn start
+                a, b -> a, b top 1
+            end
+        end
+    </pre>
+    <p>This code creates two kinds of cards, A & B, neither have any attributes like suit or points or attack. It then creates two face up stacks a & b, and places 10 of card A into stack a, and 10 of card B into stack b</p>
+    <p>Then, every turn it lets the player move the top card from either a or b, to either a or b.</p>
+    <p>It's not really a 'game' but it's enough to get us going for now.</p>
+    <h3>Loading it into the engine</h3>
+    <p>Now lets load this code up in the engine!</p>
+    <p>When you first open up the engine, you'll see the menu screen</p>
+    <img src="img/menuscreenshot.png" width="420"/>
+    <p>Click the load button and navigate to the folder where your project is. Press the 'up' button to move up a directory, and click on a folder to open that folder. If you have the full path to the folder on your clipboard, you can click that 'paste from clipboard' button to go straight there.</p>
+    <p>When you find your new file, select it and press the 'load' button.</p>
+    <img src="img/loadscreen.png" width="420"/>
+    <p>The first time you load up a project in papertoy, it creates a design file for you:</p>
+    <img src="img/newdesignfile.png" width="420"/>
+    <p>This file will be blank at first, but once you start customising the look of the game using the design tool, this file will start to fill up.</p>
+    <p>If all you see when you load the game is a blank screen (But no <b><span style="color:red;">red</span></b> error text), press the 'r' button.</p>
+    <p>If you do see <b><span style="color:red;">red</span></b> error text in the top left of the screen, it means that you've not copied the code from this guide correctly. Try pasting it again, and reload the game.</p>
+    <p>You can go back to the main menu by pressing the 'esc' key on your keyboard</p>
+    <img src="img/firstgame.png" width="420"/>
+    <p>And that's it! Next, we'll customise the design in the <a href="designer.html">designer section</a>! </p>
+    <p>Also why don't you see if you can work out what the code does by playing around with the project you just created!</p>
+</body>
+<footer style="color:dimgrey">
+    <p style="color:dimgrey">This documentation was hand writen by a human. Spelling errors and all, just as god intended.</p>
+    <p style="color:dimgrey">No generative AI has been used.</p>
+</footer>
+</html>

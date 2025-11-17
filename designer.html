@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Project</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <img class="logo" src="img/papertoy_logo.png"/>
+</head>
+<body>
+<a href="index.html">home</a>
+<h1>Using the Designer</h1>
+
+
+<p>Once you load up a project, you can view it's design by selecting 'Design' from the main menu.</p>
+<p>You can access the main menu at any time by pressing the 'esc' key on your keyboard.</p>
+<p>Here we can see the design for the 'newgame' project we created in the <a href="newproject.html">Creating a new project</a> section.</p>
+
+
+<h3>Board</h3>
+<img src="img/designtool.png" width="640"/>
+<p>We can see the stacks we created 'a' and 'b' both on the board, and in the top left of the screen.</p>
+<p>We can click and drag the stacks around to change their position.</p>
+<p>We can change a few settings for how each stack is displayed with the panel in the top right (you must have a stack selected for the top-right panel to show)</p>
+<p>You will notice the toolbar at the top has the 'Board' tool highlighted. This means you're looking at the Board design.</p>
+<p>To save any changes, hit the 's' key on your keyboard</p>
+<p>Now click on 'Cards'</p>
+
+<h3>Cards</h3>
+<img src="img/cardstool.png" width="480"/>
+<p>Here on the left, we can see a list of the cards that exist in our game. Click on one of those cards and you will see a placeholder image for that card</p>
+<p>These look pretty boring right now, lets change that. on the top right there's a box where you can paste a path to an image file for the card you curretly have selected</p>
+<p>Papertoy comes with some free assets for you to use. Look in the Papertoy installation folder, and navigate to <span class="code notranslate">startergame/gameres/card_sprites</span> the card_sprites folder contains images of all 52 playing cards</p>
+<p>Copy the <span class="code notranslate">gameres</span> folder and paste it alongside you code & design file</p>
+<img src="img/gameres.png" width="240"/>
+<p>Copy the text <span class="code notranslate">gameres/card_sprites/ace_spades.png</span> and click the paste button.</p>
+<img src="img/aces.png" width="480"/>
+<p>Next select the other card and copy the text <span class="code notranslate">gameres/card_sprites/ace_diamonds.png</span> and click the paste button</p>
+<img src="img/aced.png" width="480"/>
+<p>Now press 's' to save the changes, hit the 'esc' key and select 'game'</p>
+<img src="img/ingameaces.png" width="480"/>
+<p>When you hit the 's' key to save the design, the changes got written to the design.txt file that was created when we loaded our project for the first time. The design.txt file is human readable. So if you find the editiing process awkward, feel free to edit the design file directly, instead of using the designer.</p>
+<img src="img/designfile.png" width="480"/>
+<p>Notice the highlighted SPRITES section, this is where we put our sprites, the format is <span class="code notranslate">SPRITE_NAME:PATH</span>, the designer automatically sets the name to the name of the corresponding card.</p>
+<h3>Settings</h3>
+<img src="img/settings.png" width="480"/>
+<p>Here we can customise the look of our game by setting:</p>
+    <ul>
+        <li>a background image</li>
+        <li>background music (BGM)</li>
+        <li>An image for the backs of our cards</li>
+        <li>Card size</li>
+        <li>Minimum Screen size</li>
+    </ul>
+
+<p>There are also some gameplay options available to us:</p>
+<ul>
+    <li>Allowing/Dissallowing selection reversals</li>
+    <li>Automatically / Manually going to the next turn</li>
+</ul>
+
+<h4>Selection Reversals</h4>
+<p>Sometimes, when a player selects an option a secondary choice follows. For instance right now in our test game, if you select a stack to move a card from, before you select a stack to move the card to, you can un-select it by right-clicking. Sometimes this behaviour isn't desierable, so we can turn it off here.</p>
+<h4>Auto / Manual Next Turn</h4>
+<p>
+    By default, papertoy will run to the next turn if there are no actions for the player to take. Sometimes we want the player to be able to go to the next turn when they are ready. Unselecting 'Always run the next turn automatically' will make it so a player has to click a 'Next Turn' button, before the next turn runs.
+</p>
+
+<p>
+    Feel free to play around with these settings. Remember to save your changes to the design file by pressing 's' while on ANY design screen (board, cards, settings). Also, check out the design file after you've changed a setting to see how it's changed. Remember you can always make manual changes to the design file.
+</p>
+<p>
+    Next let's check out the <a href="languageguide.html">language guide</a>
+</p>
+</body>
+<footer style="color:dimgrey">
+    <p style="color:dimgrey">This documentation was hand writen by a human. Spelling errors and all, just as god intended.</p>
+    <p style="color:dimgrey">No generative AI has been used.</p>
+</footer>
+</html>

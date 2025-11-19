@@ -14,7 +14,8 @@ body {
     padding: 5%;
 }
 .code {
-    color: #b1afa7;
+    color: #fdfdfd;
+    font-weight: bold;
     font-family: 'Courier New', monospace;
     padding-left: 10px;
     padding-top: 2px;

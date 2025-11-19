@@ -54,31 +54,31 @@
             The two basic concepts in Paperlang are Cards and Stacks. Cards & Stacks may both contain attributes. Stacks contain some builtin attributes that hold important state, like <span class="code notranslate">size</span> for the size, <span class="code notranslate">top</span> for the top card, <span class="code notranslate">bottom</span> for the bottom card.
         </p>
         <pre class="code notranslate">
-            card A start
+            card MyFirstCard start
                 int h = 0
             end
 
-            A.h ; access 'h'
+            MyFirstCard.h ; access 'h'
 
-            visiblestack a
+            visiblestack hand
 
-            place A -> a 1
+            place MyFirstCard -> hand 1
 
-            a.size == 1 ; a contains 1 card, so it's size is 1
-            a.top == A ; the top card in a is 'A'
-            a.bottom == B ; the bottom card in a is also 'A'
+            hand.size == 1 ; hand contains 1 card, so it's size is 1
+            hand.top == MyFirstCard ; the top card in a is 'MyFirstCard'
+            hand.bottom == B ; the bottom card in a is also 'MyFirstCard'
 
-            card B start
+            card MySecondCard start
                 int h
             end
 
-            place B -> a 1
-            a.size == 2 ; a now contains 2 cards
-            a.top-1 == A ; the second from top is still A
-            a.top == B ;the top card is now B
+            place MySecondCard -> hand 1
+            hand.size == 2 ; a now contains 2 cards
+            hand.top-1 == MyFirstCard ; the second from top is still MyFirstCard
+            hand.top == MySecondCard ;the top card is now MySecondCard
 
-            int a.customVariable ; stacks can have attributes assigned to them
-            a.customVariable = 5 ; and assigned to
+            int hand.customVariable ; stacks can have attributes assigned to them
+            hand.customVariable = 5 ; and assigned to
         </pre>
 
         <p>
@@ -275,10 +275,10 @@
             <h4 id="section5">Simple Moves & Cuts</h4>
             <p>The next thing we want to cover are move commands. The syntax is:</p>
             <pre class="code notranslate">
-                SOURCE_STACk -> DESTINATION_STACK top/bottom NUMBER_TO_MOVE
+                SOURCE_STACK -> DESTINATION_STACK top/bottom NUMBER_TO_MOVE
             </pre>
             <pre class="code notranslate">
-                SOURCE_STACk /> DESTINATION_STACK top/bottom NUMBER_TO_CUT
+                SOURCE_STACK /> DESTINATION_STACK top/bottom NUMBER_TO_CUT
             </pre>
             <p>A <b>move</b> <span class="code notranslate">-></span> moves cards from one stack to the other, one at a time. So if you are moving from the top of one stack to the top of another, the order of the cards will be reversed.</p>
             <p>A <b>cut</b> <span class="code notranslate">/></span> moves multiple cards at the same time from one stack to the other, preserving order.</p>
@@ -300,7 +300,7 @@
 
             <h4 id="section8">Player Chooses a Card</h4>
             <p>This feature can be quite useful when a player needs to choose a card from their hand to play.</p>
-            <p>You can also let the player decide which cards specifically to move with <span class="code notranslate">choose SOURCE_STACk -> DESTINATION_STACK NUMBER_TO_MOVE</span></p>
+            <p>You can also let the player decide which cards specifically to move with <span class="code notranslate">choose SOURCE_STACK -> DESTINATION_STACK NUMBER_TO_MOVE</span></p>
 
             <pre class="code notranslate">
                 ...
@@ -472,7 +472,7 @@
                 <p>
                     You can test whether a stack contains a certain sequence of cards, in order. You can use an equality test against a stack and a sequence matcher <span class="code notranslate">[...]</span>.
                 </p>
-                <pre>
+                <pre class="code notranslate">
                     if a == [A B C D] start
                     ...
                 </pre>

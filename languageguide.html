@@ -704,6 +704,7 @@
                 <h3 id="section19">Card movement hooks (not available in demo version)</h3>
                 <p>Many collectable card games have mechanics where individual cards has special rules that play out when they enter or exit certain stacks. In Paperlang, you can use <span class="code notranslate">onmoved</span> and <span class="code notranslate">premove</span> hooks to run a bit of code every time a specific card has just been moved, or is just about to be moved.</p>
                 <p>inside the <span class="code notranslate">onmoved</span> and <span class="code notranslate">premove</span> hooks, <span class="code">to</span> references the stack the card moved in to, and <span class="code"></span>references the stack the card just moved out of. <span class="code">this</span> references the card being moved.</p>
+                <p><b class="hint">Hint!</b> Please note that currently, attempting to get user input during a movement hook will result in the error: '<span style="color: red">You cannot wait on user input from a movement hook</span>'</p>
                 <pre class="code notranslate">
                     ...
                     visiblestack graveyard

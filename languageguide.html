@@ -184,6 +184,18 @@
         <pre class="code notranslate">
             int i = 5
         </pre>
+        <p>
+            Stacks can have their own variables:
+        </p>
+        <pre class="notranslate code">
+            visiblestack spells start
+                bool forSpells = true
+            end
+
+            visiblestack monsters start
+                bool forMonsters = true
+            end
+        </pre>
         <h3 id="section3">Declaring Cards <span class="code notranslate">card MyCard start ... end</span></h3>
             <p>
                 The first thing we should cover here is how to make a card.
@@ -224,19 +236,12 @@
                 Here we create three different kinds of Monster: <span class="code notranslate">Goblin Hobold Elf</span> each with different defense and attack stats.
             </p>
             <p>
-                You cannot change an attribute for one individual card, changing an attribute for one card will change that value for all cards of that type. for instance this code:
+                You can change an attribute for one individual card:
             </p>
             <pre class="code notranslate">
                 monsterStack.top.defense = 0
             </pre>
-            <p>
-                Will take the top card of the stack <span class="code notranslate">monsterStack</span>, and change it's
-                defense value to <span class="code notranslate">0</span>. But it also will change the defense value of
-                all the other cards of the same type to <span class="code notranslate">0</span>.
-                So if the top card happens to be an <span class="code notranslate">Elf</span> then all
-                <span class="code notranslate">Elf</span> cards will have a defense value of
-                <span class="code notranslate">0</span>. This is currently just a limitation of the engine.
-                'Singleton cards' are planned for a future release.
+
             <p>
                 But how would we fill a stack with random Monster cards? Like this:
             </p>
@@ -435,6 +440,20 @@
                 <pre class="code notranslate">
                     list[:1] -> list[-1] top 1
                 </pre>
+                <p>
+                    You can make every stack in a stacklist to have the same variables:
+                </p>
+                <pre class="code notranslate">
+                    stacklist list[5] start
+                        int x = 0
+                    end
+                    ; (list[0]).x == 0
+                    ; (list[1]).x == 0
+                    ; (list[2]).x == 0
+                    ; (list[3]).x == 0
+                    ; (list[4]).x == 0
+                </pre>
+
                 <p>
                     You can also directly specify stacks in a list by index:
                 </p>
@@ -704,7 +723,6 @@
                 <h3 id="section19">Card movement hooks (not available in demo version)</h3>
                 <p>Many collectable card games have mechanics where individual cards has special rules that play out when they enter or exit certain stacks. In Paperlang, you can use <span class="code notranslate">onmoved</span> and <span class="code notranslate">premove</span> hooks to run a bit of code every time a specific card has just been moved, or is just about to be moved.</p>
                 <p>inside the <span class="code notranslate">onmoved</span> and <span class="code notranslate">premove</span> hooks, <span class="code">to</span> references the stack the card moved in to, and <span class="code"></span>references the stack the card just moved out of. <span class="code">this</span> references the card being moved.</p>
-                <p><b class="hint">Hint!</b> Please note that currently, attempting to get user input during a movement hook will result in the error: '<span style="color: red">You cannot wait on user input from a movement hook</span>'</p>
                 <pre class="code notranslate">
                     ...
                     visiblestack graveyard

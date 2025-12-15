@@ -36,6 +36,8 @@
     <li><a href="#section21">Declaring a loser</a></li>
     <li><a href="#section22">phases</a></li>
     <li><a href="#section23">while loops</a></li>
+	<li><a href="#section24">Flipping stacks</a></li>
+	<li><a href="#section25">Showing / Hiding stacks</a></li>
 </ol>
 
 <p>You can open any projects in the Paper Toy tool by entering the main menu with escape, clicking "Load":</p>
@@ -791,6 +793,28 @@
                 </pre>
                 <p>This will place 5 cards into the <span class="code notranslate">hand</span> stack. </p>
                 <p><b>WARNING</b> Infinite loops will cause the game to hang and become unresponsive.</p>
+				<h3 id="section24">Flipping stacks</h3>
+				<p>
+					Sometimes it can be useful to simply flip a stack over. Flipping a stack over means that hidden stacks become visible stacks, and vise versa. Also, as you're flipping the stack upside down, the order of the cards is reversed.
+				</p>
+				<pre class="code notranslate">
+                    visiblestack a
+                    ...
+                    flip a
+				</pre>
+				<p>
+					<span class="code notranslate">a</span> is now hidden, and the card order has been reversed, as it's now upside down
+				</p>
+				<h3 id="section25">Showing / Hiding stacks</h3>
+				<p>
+					If you would like to change a stack from a hidden to visible (or visible to hidden) without physically flipping the stack over and reversing the order of the cards, you can do so with <span class="code notranslate">show</span> and <span class="code notranslate">hide</span>
+				</p>
+				<pre class="code notranslate">
+                    hiddenstack a
+                    ...
+                    show a ;'a' is now a visiblestack
+                    hide a ;'a' is a hiddenstack again
+				</pre>
 </body>
 <footer style="color:dimgrey">
     <p style="color:dimgrey">This documentation was hand writen by a human. Spelling errors and all, just as god intended.</p>

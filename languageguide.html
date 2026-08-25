@@ -22,6 +22,7 @@
     <li><a href="#section8">Player Chooses a Card</a></li>
     <li><a href="#section9">Choosing between decks</a></li>
     <li><a href="#section10">Choosing between options</a></li>
+    <li><a href="#section10b">Buttons</a></li>
     <li><a href="#section11">Control flow</a></li>
     <li><a href="#section12">Stacklists (lists of stacks)</a></li>
     <li><a href="#section13">Filtering source & destination stacks</a></li>
@@ -38,6 +39,7 @@
     <li><a href="#section23">while loops</a></li>
 	<li><a href="#section24">Flipping stacks</a></li>
 	<li><a href="#section25">Showing / Hiding stacks</a></li>
+	<li><a href="#section26">Stack Grids</a></li>
 </ol>
 
 <p>You can open any projects in the Paper Toy tool by entering the main menu with escape, clicking "Load":</p>
@@ -396,7 +398,32 @@
                 </pre>
                 <img src="img/blackjack.gif" width="640">
                 <p>The dealers hand is mostly hidden to the player, apart from their first card. The players hand is visible at the bottom. If the player chooses to stick, the dealers hand is revealed. If the players score exceeds 21, then the player automatically looses. If you're interested in looking at the code, it's available in the example blackjack project <span class="code notranslate">docs/examples/blackjack</span></p>
-
+                <h4 id="section10b">Buttons</h4>
+                <p>
+                    That example above is a little contrived. There's no real reason for those extra hit and stick stacks, they just act as buttons.
+                    <br/>
+                    And the <span class="code notranslate">hitbutton -> hitbutton top 1</span> move's feel pretty hacky. If only there was a way to get the user to select between multiple different choices that didn't involve them having to click on cards!
+                    <br/><br/>
+                    Introducing buttons:
+                </p>
+                <pre class="code notranslate">
+                    buttons start
+                        button "hit" then
+                            deck -> hand top 1
+                            deck -> dealerHidden  top 1
+                        button "stick" then
+                            ; check if we've lost ...
+                            ...
+                    end
+                </pre>
+                <p>
+                    This looks a lot cleaner, and we're no longer forced to declare a bunch of stacks and cards that don't have any gameplay value.
+                </p>
+                <img src="img/blackjackbuttons.gif" width="640"></img>
+                <p>
+                    You'll also notice the nifty little "playerscore" counter the bottom left of the screen. This can be setup in the designer by clicking the "variables" button.
+                    <br/>The background image can also be set in the designer settings panel.
+                </p>
                 <h3 id="section11">Control flow <span class="code notranslate">if ... start ... elseif ... else ... end</span> </h3>
                 <p>
                     an if/elseif/else structure exists in paperlang. Leaning on the blackjack example project again:
@@ -412,7 +439,7 @@
                 </pre>
 
                 <h3 id="section12">Stacklists (lists of stacks)</h3>
-                <p>It is possible to define a list of stacks, this is usefull where you have multiple stacks that need to interact with eachother in a positional way. EG in the solitaire game <a href="https://bicyclecards.com/how-to-play/accordion/">Accordion</a></p>
+                <p>It is possible to define a list of stacks, this is useful where you have multiple stacks that need to interact with eachother in a positional way. EG in the solitaire game <a href="https://bicyclecards.com/how-to-play/accordion/">Accordion</a></p>
                 <p>For an example of stacklist use, please see the <a href="accordion_workedexample.html">Accordion Worked Example Project</a></p>
                 <pre class="code notranslate">
                     stacklist list[5]
@@ -815,6 +842,65 @@
                     show a ;'a' is now a visiblestack
                     hide a ;'a' is a hiddenstack again
 				</pre>
+                <h3 id="section26">Stack Grids</h3>
+                <p>Not only can you create <a href="#section12">lists of stacks</a>, you can also create grids. This is useful when you want a card's position in 2 Dimensions to matter somehow to the game rules.<br/>
+                    You might also be able to create simple board games with this feature, though I've not tried doing this myself yet! so your milage may vary :)
+                </p>
+                <pre class="code notranslate">
+                card FloorTile start end
+                card Rune start end
+                stackgrid floor[3 3] ;Create a 3x3 grid of stacks
+
+                setup start
+                    place FloorTile -> every floor 1; place one FloorTile on every 'floor' grid position
+                    place Rune -> floor[0 1] 1; place one Rune on grid position 0,1
+                end
+                </pre>
+                <img src="img/stackgrid.gif" width="600"/>
+                <p>
+                    As well as addressing grid positions directly as above with <span class="code notranslate">floor[0 1]</span>, you can also address relative grid positions in a stack move expression, much like you can with stack lists.
+                    <br/><br/>In the following example, every turn we move the top card from any stack in the <span class="code notranslate">floor</span> grid with a <span class="code notranslate">Rune</span> as the top card (<a href="#section14">Ordered Sequence Matchers</a>)
+                    to any stack 1 above, below, left or right of that card:
+                </p>
+                <pre class="code notranslate">
+                turn start
+                    floor{[ Rune : ]} ->
+                        floor [
+                            :up 1
+                            :down 1
+                            :left 1
+                            :right 1
+                        ] top 1
+                end
+                </pre>
+                <p>
+                    You can also create complex directions like diagonals:
+                    <br/><span class="code notranslate"> ... -> floor[:up 1 left 1] top 1</span>
+                    <br/>Move the top card, <span class="code notranslate">up 1</span> and <span class="code notranslate">left 1</span>
+                </p>
+                <img src="img/relative_grid_move.gif" width="600"/>
+                <p>
+                    You can treat any row or column in the grid as an individual <span class="code notranslate">stacklist</span>
+                    In this example we treat the left most column of the floor grid as it's own list.
+                    <span class="code notranslate">floor{[col/row] [col or row index]} </span>
+                </p>
+                <pre class="code notranslate">
+                setup start
+                    place Tile -> every floor 1
+                    place Wizard -> every floor{col 0} 1
+                end
+                </pre>
+                <img src="img/gridcolaslist.gif" width="600"/>
+                <p>
+                    You can use this column / row syntax together with the selection syntax demonstrated in the <a href="accordion_workedexample.html">Accordion Worked Example Project</a>:
+                </p>
+                <pre class="code notranslate">
+                    place Wizard -> floor{col 0 {|[Tile]}} 1
+                </pre>
+                <p>
+                    Place a Wizard card on the first stack of column 0 that contains one tile.
+                </p>
+
 </body>
 <footer style="color:dimgrey">
     <p style="color:dimgrey">This documentation was hand writen by a human. Spelling errors and all, just as god intended.</p>
